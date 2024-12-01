@@ -1,6 +1,8 @@
 package aocreader
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestNewMockReader(t *testing.T) {
 	data := []string{
@@ -35,28 +37,17 @@ func TestMockRead(t *testing.T) {
 
 	reader := NewMockReader(data)
 
-	reader.Read(func(line string) bool {
-		if line != data[iterationsCount] {
-			t.Fatalf(`"%s" != "%s"`, line, data[iterationsCount])
+	for reader.Running() {
+		i, line := reader.Line()
+		if line != data[i] {
+			t.Fatalf(`"%s" != "%s"`, line, data[i])
 		}
 
 		iterationsCount++
-
-		return false
-	})
+	}
 
 	if iterationsCount != 2 {
 		t.Fatalf("%d != %d", iterationsCount, 2)
-	}
-}
-
-func TestNewAocReader(t *testing.T) {
-	filename := "./test.txt"
-
-	reader := NewAocReader(filename)
-
-	if reader.inputPath != filename {
-		t.Fatalf(`"%s" != "%s"`, reader.inputPath, filename)
 	}
 }
 
@@ -70,15 +61,14 @@ func TestAocRead(t *testing.T) {
 
 	iterationsCount := 0
 
-	reader.Read(func(line string) bool {
-		if line != data[iterationsCount] {
-			t.Fatalf(`"%s" != "%s"`, line, data[iterationsCount])
+	for reader.Running() {
+		i, line := reader.Line()
+		if line != data[i] {
+			t.Fatalf(`"%s" != "%s"`, line, data[i])
 		}
 
 		iterationsCount++
-
-		return false
-	})
+	}
 
 	if iterationsCount != 2 {
 		t.Fatalf("%d != %d", iterationsCount, 2)

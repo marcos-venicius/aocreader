@@ -16,7 +16,11 @@ lines := []string{
 
 reader := aocreader.NewMockReader(lines)
 
-reader.Read(...)
+for reader.Running() {
+    i, line := reader.Line()
+
+    ...
+}
 ```
 
 ## Using
@@ -28,5 +32,9 @@ import "github.com/marcos-venicius/aocreader"
 
 reader := aocreader.NewAocReader("./input.txt")
 
-reader.Read(...)
+for reader.Running() {
+    i, line := reader.Line()
+
+    ...
+}
 ```

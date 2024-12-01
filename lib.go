@@ -1,49 +1,75 @@
 package aocreader
 
-import "os"
+import (
+	"os"
+)
 
 func NewMockReader(lines []string) *MockReader {
 	return &MockReader{
 		lines: lines,
+		index: 0,
 	}
 }
 
 func NewAocReader(inputPath string) *AocReader {
-	return &AocReader{
-		inputPath: inputPath,
-	}
-}
-
-func (r *MockReader) Read(handler LineHandler) {
-	for _, line := range r.lines {
-		if line != "" && handler(line) {
-			break
-		}
-	}
-}
-
-func (r *AocReader) Read(handler LineHandler) {
-	data, err := os.ReadFile(r.inputPath)
+	data, err := os.ReadFile(inputPath)
 
 	if err != nil {
 		panic(err)
 	}
 
-	lastIndex := 0
-
-	for i, b := range data {
-		if b == '\n' && i-lastIndex > 0 {
-			line := string(data[lastIndex:i])
-
-			if handler(line) {
-				break
-			}
-
-			lastIndex = i + 1
-		} else if i == len(data)-1 && len(data)-lastIndex > 0 {
-			line := string(data[lastIndex:])
-
-			handler(line)
-		}
+	return &AocReader{
+		lineIndex:    0,
+		currentIndex: 0,
+		contentIndex: 0,
+		content:      data,
 	}
+}
+
+func (r *MockReader) Running() bool {
+	return r.index < len(r.lines)-1
+}
+
+func (r *MockReader) Line() (int, string) {
+	defer r.update()
+
+	if r.index+1 >= len(r.lines) {
+		panic("invalid range")
+	}
+
+	return r.index, r.lines[r.index]
+}
+
+func (r *MockReader) update() {
+	r.index++
+}
+
+func (r *AocReader) Running() bool {
+	return r.contentIndex < len(r.content)
+}
+
+func (r *AocReader) update() {
+	r.lineIndex++
+	r.currentIndex++
+	r.contentIndex = r.currentIndex
+}
+
+func (r *AocReader) Line() (int, string) {
+	defer r.update()
+
+	if r.contentIndex >= len(r.content) {
+		panic("invalid line range")
+	}
+
+	for _, b := range r.content[r.currentIndex:] {
+		if b == '\n' {
+			line := string(r.content[r.contentIndex:r.currentIndex])
+
+			return r.lineIndex, line
+		}
+
+		r.currentIndex++
+	}
+
+	return r.lineIndex, string(r.content[r.contentIndex:])
 }

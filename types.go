@@ -4,13 +4,18 @@ package aocreader
 type LineHandler func(line string) bool
 
 type LinesReader interface {
-	Read(handler LineHandler)
+	Running() bool
+	Line() (int, string)
 }
 
 type AocReader struct {
-	inputPath string
+	lineIndex    int
+	currentIndex int
+	contentIndex int
+	content      []byte
 }
 
 type MockReader struct {
 	lines []string
+	index int
 }
