@@ -6,6 +6,7 @@ type LineHandler func(line string) bool
 type LinesReader interface {
 	Running() bool
 	Line() (int, string)
+	Reset()
 }
 
 type AocReader struct {

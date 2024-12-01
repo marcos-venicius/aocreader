@@ -26,6 +26,10 @@ func NewAocReader(inputPath string) *AocReader {
 	}
 }
 
+func (r *MockReader) Reset() {
+	r.index = 0
+}
+
 func (r *MockReader) Running() bool {
 	return r.index < len(r.lines)-1
 }
@@ -42,6 +46,12 @@ func (r *MockReader) Line() (int, string) {
 
 func (r *MockReader) update() {
 	r.index++
+}
+
+func (r *AocReader) Reset() {
+	r.lineIndex = 0
+	r.currentIndex = 0
+	r.contentIndex = 0
 }
 
 func (r *AocReader) Running() bool {
