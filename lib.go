@@ -31,13 +31,13 @@ func (r *MockReader) Reset() {
 }
 
 func (r *MockReader) Running() bool {
-	return r.index < len(r.lines)-1
+	return r.index < len(r.lines)
 }
 
 func (r *MockReader) Line() (int, string) {
 	defer r.update()
 
-	if r.index+1 >= len(r.lines) {
+	if !r.Running() {
 		panic("invalid range")
 	}
 

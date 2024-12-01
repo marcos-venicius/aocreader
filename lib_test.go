@@ -39,6 +39,7 @@ func TestMockRead(t *testing.T) {
 
 	for reader.Running() {
 		i, line := reader.Line()
+
 		if line != data[i] {
 			t.Fatalf(`"%s" != "%s"`, line, data[i])
 		}
@@ -46,8 +47,8 @@ func TestMockRead(t *testing.T) {
 		iterationsCount++
 	}
 
-	if iterationsCount != 2 {
-		t.Fatalf("%d != %d", iterationsCount, 2)
+	if iterationsCount != 3 {
+		t.Fatalf("%d != %d", iterationsCount, 3)
 	}
 }
 
